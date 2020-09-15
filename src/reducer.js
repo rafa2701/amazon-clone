@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 export const initialState = {
   basket: [],
 };
@@ -22,6 +23,7 @@ const reducer = (state, action) => {
       let newBasket = [...state.basket];
 
       if (index >= 0) {
+        
         newBasket.splice(index, 1);
       } else {
         console.warn(
@@ -33,10 +35,11 @@ const reducer = (state, action) => {
         basket: newBasket,
       };
 
-      case 'SET_USER':
-        return {
-          ...state, user: action.user
-        }
+    case "SET_USER":
+      return {
+        ...state,
+        user: action.user,
+      };
 
     default:
       return state;
