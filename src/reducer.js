@@ -15,6 +15,11 @@ const reducer = (state, action) => {
         basket: [...state.basket, action.item],
       };
 
+    case 'EMPTY_BASKET':
+      return{
+        ...state, basket: []
+      }; 
+
     ///Look for an accurate remove
     case "REMOVE_FROM_BASKET":
       const index = state.basket.findIndex(
@@ -35,6 +40,8 @@ const reducer = (state, action) => {
         basket: newBasket,
       };
 
+    
+      
     case "SET_USER":
       return {
         ...state,

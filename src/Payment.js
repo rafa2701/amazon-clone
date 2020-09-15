@@ -2,13 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./Payment.css";
 import CheckoutProduct from "./CheckoutProduct";
 import { useStateValue } from "./StateProvider";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CurrencyFormat from "react-currency-format";
 import { getBasketTotal } from "./reducer";
+import axios from "./axios";
+import { db } from "./firebase";
 
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
+  const history = useHistory();
+  
   const stripe = useStripe();
   const elements = useElements();
 
@@ -18,21 +22,22 @@ function Payment() {
   const [disabled, setDisabled] = useState(true);
   const [clientSecret, setClientSecret] = useState(true);
 
-  useEffectt(() => {
+  useEffect(() => {
       //generate special stripe secret whenever the user changes the basket
     const getClientSecret = async () => {
         const response = await axios({
             method: 'post', 
             //Stripe Expects the total in a currencies subunits (ex: cents for us dollars)
-            url: `payment/create?total=${getBasketTotal(basket)*100}`
+            url: `payments/create?total=${getBasketTotal(basket)*100}`
         })
         setClientSecret(response.data.clientSecret)
     }
     getClientSecret();
     }, [basket])
 
+    // console.log('The awesome secret is  ', clientSecret) //debug log for secret key
 
-  const handleSubmit = async (event) => {
+    const handleSubmit = async (event) => {
     //   Do fancy stripe stuff
     event.preventDefault();
     setProcessing(true);
@@ -43,10 +48,26 @@ function Payment() {
         }
     }).then(({paymentIntent}) => {
         //paymentIntent = payment confirmation
+        
+        db
+            .collection('users')
+            .doc(user?.uid)
+            .collection('orders')
+            .doc(paymentIntent.id)
+            .set ({
+                basket: basket,
+                amount: paymentIntent.amount,
+                created: paymentIntent.created,
+            })
+            
+        
         setSucceeded(true);
         setError(null);
         setProcessing(false);
-        history.replaceState('/orders')
+        dispatch ({
+            type: 'EMPTY_BASKET'
+        })
+        history.replace('/orders')
     })
   };
   const handleChange = (event) => {
