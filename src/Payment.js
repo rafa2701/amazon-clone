@@ -12,7 +12,7 @@ import { db } from "./firebase";
 function Payment() {
   const [{ basket, user }, dispatch] = useStateValue();
   const history = useHistory();
-  
+
   const stripe = useStripe();
   const elements = useElements();
 
@@ -23,52 +23,52 @@ function Payment() {
   const [clientSecret, setClientSecret] = useState(true);
 
   useEffect(() => {
-      //generate special stripe secret whenever the user changes the basket
+    //generate special stripe secret whenever the user changes the basket
     const getClientSecret = async () => {
-        const response = await axios({
-            method: 'post', 
-            //Stripe Expects the total in a currencies subunits (ex: cents for us dollars)
-            url: `payments/create?total=${getBasketTotal(basket)*100}`
-        })
-        setClientSecret(response.data.clientSecret)
-    }
+      const response = await axios({
+        method: "post",
+        //Stripe Expects the total in a currencies subunits (ex: cents for us dollars)
+        url: `payments/create?total=${getBasketTotal(basket) * 100}`,
+      });
+      setClientSecret(response.data.clientSecret);
+    };
     getClientSecret();
-    }, [basket])
+  }, [basket]);
 
-    // console.log('The awesome secret is  ', clientSecret) //debug log for secret key
+ console.log("The awesome secret is  ", clientSecret); //debug log for secret key
 
-    const handleSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     //   Do fancy stripe stuff
     event.preventDefault();
     setProcessing(true);
 
-    const payload = await stripe.confirmCardPayment(clientSecret, {
+    const payload = await stripe
+      .confirmCardPayment(clientSecret, {
         payment_method: {
-            card: elements.getElement(CardElement)
-        }
-    }).then(({paymentIntent}) => {
+          card: elements.getElement(CardElement),
+        },
+      })
+      .then(({ paymentIntent }) => {
         //paymentIntent = payment confirmation
-        
-        db
-            .collection('users')
-            .doc(user?.uid)
-            .collection('orders')
-            .doc(paymentIntent.id)
-            .set ({
-                basket: basket,
-                amount: paymentIntent.amount,
-                created: paymentIntent.created,
-            })
-            
-        
+
+        db.collection("users")
+          .doc(user?.uid)
+          .collection("orders")
+          .doc(paymentIntent.id)
+          .set({
+            basket: basket,
+            amount: paymentIntent.amount,
+            created: paymentIntent.created,
+          });
+
         setSucceeded(true);
         setError(null);
         setProcessing(false);
-        dispatch ({
-            type: 'EMPTY_BASKET'
-        })
-        history.replace('/orders')
-    })
+        dispatch({
+          type: "EMPTY_BASKET",
+        });
+        history.replace("/orders");
+      });
   };
   const handleChange = (event) => {
     // // Listen for changes in the CardElement

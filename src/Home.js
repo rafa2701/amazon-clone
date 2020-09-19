@@ -15,6 +15,7 @@ function Home() {
 
           <div className="home__row">
             <Product
+              id="49538085"
               title="GTA V PC Game"
               price={29.99}
               image="https://images-na.ssl-images-amazon.com/images/I/916T5H6sCtL._AC_SL1500_.jpg"
@@ -31,21 +32,21 @@ function Home() {
 
           <div className="home__row">
             <Product
-              id="49558094"
+              id="49558044"
               title="Google Pixel 4A - US Model - GSM Unlocked- 64GB"
               price={199.99}
               rating={4}
               image="https://m.media-amazon.com/images/I/61C9GrXEp4L._AC_SS350_.jpg"
             />
             <Product
-              id="49558194"
+              id="49558199"
               title="7-in-1 Electric Pressure Cooker, 6 Quart, 14 One-Touch Programs"
               price={79.99}
               rating={3}
               image="https://images-na.ssl-images-amazon.com/images/I/81i8c1fSkyL._AC_SL1500_.jpg"
             />
             <Product
-              id="49558094"
+              id="49558194"
               title="Apple AirPods with Charging Case (Wired)"
               price={89.99}
               rating={5}
@@ -56,7 +57,7 @@ function Home() {
           <div className="home__row">
             {/*Product */}
             <Product
-              id="49558094"
+              id="49558794"
               title="Sceptre Curved 27'' 75Hz LED Monitor HDMI VGA Build-In Speakers, EDGE-LESS Metal Black 2019 (C275W-1920RN)"
               price={189.99}
               rating={4}
