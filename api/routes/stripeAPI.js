@@ -18,7 +18,9 @@ app1.use(cors({ origin: true }));
 app1.use(express.json());
 
 // - API Router
-app1.get("/", (request, response) => response.status(200).send("hello world"));
+app1.get("/", (request, response) =>
+  response.status(200).send("The API is working as intended")
+);
 
 //local route "/payments/create"
 
@@ -34,7 +36,7 @@ app1.post("/payments/create", async (request, response) => {
 
   //Ok, Created
   response.send({
-    clientSecret: paymentIntent.client_secret
+    clientSecret: paymentIntent.client_secret,
   });
 });
 
